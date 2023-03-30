@@ -1,46 +1,21 @@
-import openai
 import streamlit as st
-import re
+from sentence_transformers import SentenceTransformer, util
 
-# Fonction pour extraire le score de similarité de la réponse générée par GPT-3
-def extract_score(response):
-    match = re.search(r"\d+\.\d+", response)
-    if match:
-        return match.group()
-    else:
-        return "Pas de similarité trouvé."
-
-# Fonction pour récupérer la clé API OpenAI GPT-3 saisie par l'utilisateur
-def get_api_key():
-    api_key = st.text_input("Entrez votre clé Openai:")
-    return api_key
-
-# Fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
-def get_similarity(text1, text2, model_engine):
-    response = openai.Completion.create(
-        engine=model_engine,
-        prompt=f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:",
-        max_tokens=64,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    similarity = response.choices[0].text.strip()
-    similarity_score = extract_score(similarity)
+# Créer une fonction pour récupérer la similarité entre deux textes en utilisant SentenceTransformer
+def get_similarity(text1, text2):
+    model = SentenceTransformer('paraphrase-distilroberta-base-v1')
+    embeddings = model.encode([text1, text2])
+    similarity_score = util.cos_sim(embeddings[0], embeddings[1])
     return similarity_score
 
-# Fonction principale pour gérer l'exécution du programme
+# Créer une fonction main pour gérer l'exécution du programme
 def main():
-    st.title("Similarité entre textes")
-    api_key = get_api_key()
-    if api_key:
-        openai.api_key = api_key
-        model_engine = "text-similarity-davinci-001"
-        text1 = st.text_area("Texte 1")
-        text2 = st.text_area("Texte 2")
-        if st.button("Compare"):
-            similarity_score = get_similarity(text1, text2, model_engine)
-            st.write(f"Le score de similarité entre les deux textes est: {similarity_score}.")
+    st.title(" Similarité entre textes")
+    text1 = st.text_area("Texte 1")
+    text2 = st.text_area("Texte 2")
+    if st.button("Compare"):
+        similarity_score = get_similarity(text1, text2)
+        st.write(f"Le Score de Similarité entre les deux textes est: {similarity_score}.")
 
 if __name__ == "__main__":
     main()
