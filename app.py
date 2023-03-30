@@ -10,9 +10,9 @@ def get_similarity(text1, text2):
 
 # Créer une fonction main pour gérer l'exécution du programme
 def main():
-    st.title("Text Similarity Checker")
-    text1 = st.text_area("Text 1")
-    text2 = st.text_area("Text 2")
+    st.title(" Similarité entre textes")
+    text1 = st.text_area("Texte 1")
+    text2 = st.text_area("Texte 2")
     if st.button("Compare"):
         similarity_score = get_similarity(text1, text2)
         st.write(f"The similarity score between the two texts is {similarity_score}.")
