@@ -1,14 +1,5 @@
 import openai
 import streamlit as st
-import re
-
-# Fonction pour extraire le score de similarité de la réponse générée par GPT-3
-def extract_score(response):
-    match = re.search(r"\d+\.\d+", response)
-    if match:
-        return match.group()
-    else:
-        return "No similarity score found."
 
 # Fonction pour récupérer la clé API OpenAI GPT-3 saisie par l'utilisateur
 def get_api_key():
@@ -27,8 +18,7 @@ def get_similarity(text1, text2, model_engine):
         temperature=0.5,
     )
     similarity = response.choices[0].text.strip()
-    similarity_score = extract_score(similarity)
-    return similarity_score
+    return similarity
 
 # Fonction principale pour gérer l'exécution du programme
 def main():
@@ -36,12 +26,13 @@ def main():
     api_key = get_api_key()
     if api_key:
         openai.api_key = api_key
-        model_engine = "text-similarity-davinci-001"
+        model_engine = "text-babbage-001"
         text1 = st.text_area("Text 1")
         text2 = st.text_area("Text 2")
         if st.button("Compare"):
-            similarity_score = get_similarity(text1, text2, model_engine)
-            st.write(f"The similarity score between the two texts is {similarity_score}.")
+            similarity = get_similarity(text1, text2, model_engine)
+            similarity_score = float(similarity)
+            st.write(f"The similarity score between the two texts is {similarity_score:.2f}.")
 
 if __name__ == "__main__":
     main()
