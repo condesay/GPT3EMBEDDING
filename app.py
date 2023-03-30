@@ -1,12 +1,21 @@
 import openai
 import streamlit as st
+import re
 
-# Créer une fonction pour récupérer la clé API OpenAI GPT-3 saisie par l'utilisateur
+# Fonction pour extraire le score de similarité de la réponse générée par GPT-3
+def extract_score(response):
+    match = re.search(r"\d+\.\d+", response)
+    if match:
+        return match.group()
+    else:
+        return "No similarity score found."
+
+# Fonction pour récupérer la clé API OpenAI GPT-3 saisie par l'utilisateur
 def get_api_key():
     api_key = st.text_input("Enter your OpenAI API key:")
     return api_key
 
-# Créer une fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
+# Fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
 def get_similarity(text1, text2, model_engine):
     response = openai.Completion.create(
         engine=model_engine,
@@ -17,11 +26,10 @@ def get_similarity(text1, text2, model_engine):
         temperature=0.5,
     )
     similarity = response.choices[0].text.strip()
-    # Extraire le score de similarité de la réponse générée par GPT-3
-    similarity_score = similarity.split(":")[-1].strip()
+    similarity_score = extract_score(similarity)
     return similarity_score
 
-# Créer une fonction main pour gérer l'exécution du programme
+# Fonction principale pour gérer l'exécution du programme
 def main():
     st.title("Text Similarity Checker")
     api_key = get_api_key()
