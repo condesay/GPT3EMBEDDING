@@ -24,6 +24,7 @@ def get_similarity(text1, text2, model_engine):
         n=1,
         stop=None,
         temperature=0.5,
+        api_version="2021-10-01-preview",
         endpoint="https://tsi-openai.openai.azure.com/"
     )
     similarity = response.choices[0].text.strip()
@@ -36,7 +37,7 @@ def main():
     api_key = get_api_key()
     if api_key:
         openai.api_key = api_key
-        model_engine = "text-similarity-davinci-001"
+        model_engine = "text-similarity-davinci-002"
         text1 = st.text_area("Texte 1")
         text2 = st.text_area("Texte 2")
         if st.button("Compare"):
