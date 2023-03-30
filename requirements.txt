@@ -2,5 +2,3 @@ streamlit
 openai
 pandas
 numpy
-get_embedding
-cosine_similarity
