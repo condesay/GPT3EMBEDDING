@@ -15,7 +15,7 @@ def main():
     text2 = st.text_area("Texte 2")
     if st.button("Compare"):
         similarity_score = get_similarity(text1, text2)
-        st.write(f"The similarity score between the two texts is {similarity_score}.")
+        st.write(f"Le Score de Similarité entre les deux textes est: {similarity_score}.")
 
 if __name__ == "__main__":
     main()
