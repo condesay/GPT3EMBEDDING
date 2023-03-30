@@ -8,15 +8,16 @@ def classify_text(text, labels, model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSequenceClassification.from_pretrained(model_name)
 
-    # encodage du texte en entrée
+    # encode le texte en entrée et récupère les probabilités de chaque classe
     inputs = tokenizer(text, padding=True, truncation=True, return_tensors="pt")
-
-    # classification du texte
     outputs = model(**inputs)
-    predictions = torch.argmax(outputs.logits, dim=1)
+    logits = outputs.logits.detach().cpu().numpy()[0]
+    probs = torch.softmax(torch.tensor(logits), dim=0).tolist()
 
-    # retourner le label prédit
-    return labels[predictions]
+    # retourne le label avec la plus grande probabilité
+    max_prob = max(probs)
+    max_prob_idx = probs.index(max_prob)
+    return labels[max_prob_idx]
 
 # fonction main pour exécuter le programme
 def main():
@@ -27,7 +28,7 @@ def main():
     if st.button("Classify"):
         # classification du texte saisi
         labels = [label1, label2]
-        model_name = "distilbert-base-uncased-finetuned-sst-2-english" # modèle pré-entraîné pour la classification binaire
+        model_name = "textattack/roberta-base-MRPC" # modèle pré-entraîné pour la classification
         label = classify_text(text, labels, model_name)
         st.write(f"The text is classified as '{label}'.")
 
