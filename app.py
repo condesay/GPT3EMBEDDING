@@ -1,34 +1,47 @@
+import openai
 import streamlit as st
-import torch
-from transformers import BertTokenizer, BertForSequenceClassification
+import re
 
-# Créer une fonction main pour gérer l'exécution du programme
-def main():
-    st.title("Text Classification App")
-
-    # Demander à l'utilisateur d'entrer les deux labels
-    label_1 = st.text_input("Enter label 1:")
-    label_2 = st.text_input("Enter label 2:")
-
-    # Demander à l'utilisateur d'entrer le texte à classer
-    text = st.text_area("Enter text:")
-
-    # Charger le modèle BERT pré-entraîné pour la classification de séquences
-    model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
-    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-
-    # Transformer le texte en entrée en un encodage numérique qui peut être compris par le modèle BERT
-    inputs = tokenizer(text, padding=True, truncation=True, return_tensors="pt")
-
-    # Obtenir les scores de classification à partir du modèle BERT
-    outputs = model(**inputs)
-    scores = torch.softmax(outputs.logits, dim=1).tolist()[0]
-
-    # Déterminer le label avec le score le plus élevé et l'afficher à l'utilisateur
-    if scores[0] > scores[1]:
-        st.write(f"The text is classified as {label_1} with a confidence score of {scores[0]:.2f}.")
+# Fonction pour extraire le score de similarité de la réponse générée par GPT-3
+def extract_score(response):
+    match = re.search(r"\d+\.\d+", response)
+    if match:
+        return match.group()
     else:
-        st.write(f"The text is classified as {label_2} with a confidence score of {scores[1]:.2f}.")
+        return "Pas de similarité trouvé."
+
+# Fonction pour récupérer la clé API OpenAI GPT-3 saisie par l'utilisateur
+def get_api_key():
+    api_key = st.text_input("Entrez votre clé OpenAI:")
+    return api_key
+
+# Fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
+def get_similarity(text1, text2, model_engine):
+    response = openai.Completion.create(
+        engine=model_engine,
+        prompt=f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:",
+        max_tokens=64,
+        n=1,
+        stop=None,
+        temperature=0.5,
+        endpoint="https://tsi-openai.openai.azure.com/"
+    )
+    similarity = response.choices[0].text.strip()
+    similarity_score = extract_score(similarity)
+    return similarity_score
+
+# Fonction principale pour gérer l'exécution du programme
+def main():
+    st.title("Similarité entre textes")
+    api_key = get_api_key()
+    if api_key:
+        openai.api_key = api_key
+        model_engine = "text-similarity-davinci-001"
+        text1 = st.text_area("Texte 1")
+        text2 = st.text_area("Texte 2")
+        if st.button("Compare"):
+            similarity_score = get_similarity(text1, text2, model_engine)
+            st.write(f"Le score de similarité entre les deux textes est {similarity_score}.")
 
 if __name__ == "__main__":
     main()
