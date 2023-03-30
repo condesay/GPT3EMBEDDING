@@ -7,7 +7,7 @@ def get_api_key():
     return api_key
 
 # Créer une fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
-def get_similarity(text1, text2, model_engine):
+def get_similarity(text1, text2):
     response = openai.Completion.create(
         engine=model_engine,
         prompt=f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:",
@@ -29,7 +29,7 @@ def main():
         text1 = st.text_area("Text 1")
         text2 = st.text_area("Text 2")
         if st.button("Compare"):
-            similarity = get_similarity(text1, text2, model_engine)
+            similarity = get_similarity(text1, text2)
             st.write(f"The similarity between the two texts is {similarity}.")
 
 if __name__ == "__main__":
