@@ -1,4 +1,5 @@
 import openai
+from openai.embeddings_utils import get_embedding, cosine_similarity
 import streamlit as st
 
 # Fonction pour récupérer la clé API OpenAI GPT-3 saisie par l'utilisateur
@@ -8,26 +9,14 @@ def get_api_key():
 
 # Fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
 def get_similarity(text1, text2, model_engine):
-    prompt = f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:"
-    response = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt,
-        max_tokens=64,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    similarity_str = response.choices[0].text.strip()
-    similarity_score = None
-    for token in similarity_str.split():
-        try:
-            similarity_score = float(token)
-            break
-        except ValueError:
-            pass
-    if similarity_score is None:
-        similarity_score = "No similarity score found."
-    return similarity_score
+    # Récupérer les vecteurs d'embedding pour chaque texte
+    embedding1 = get_embedding(text1, model_engine)
+    embedding2 = get_embedding(text2, model_engine)
+
+    # Calculer le score de similarité en utilisant la fonction cosine_similarity
+    similarity = cosine_similarity(embedding1, embedding2)
+
+    return similarity
 
 # Fonction principale pour gérer l'exécution du programme
 def main():
