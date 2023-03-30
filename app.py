@@ -1,36 +1,34 @@
 import streamlit as st
 import torch
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import BertTokenizer, BertForSequenceClassification
 
-# fonction pour effectuer la classification de texte
-def classify_text(text, labels, model_name):
-    # charger le tokenizer et le modèle pré-entraîné
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name)
-
-    # encode le texte en entrée et récupère les probabilités de chaque classe
-    inputs = tokenizer(text, padding=True, truncation=True, return_tensors="pt")
-    outputs = model(**inputs)
-    logits = outputs.logits.detach().cpu().numpy()[0]
-    probs = torch.softmax(torch.tensor(logits), dim=0).tolist()
-
-    # retourne le label avec la plus grande probabilité
-    max_prob = max(probs)
-    max_prob_idx = probs.index(max_prob)
-    return labels[max_prob_idx]
-
-# fonction main pour exécuter le programme
+# Créer une fonction main pour gérer l'exécution du programme
 def main():
-    st.title("Text Classification")
-    text = st.text_area("Enter some text to classify")
-    label1 = st.text_input("Enter label 1:")
-    label2 = st.text_input("Enter label 2:")
-    if st.button("Classify"):
-        # classification du texte saisi
-        labels = [label1, label2]
-        model_name = "textattack/roberta-base-MRPC" # modèle pré-entraîné pour la classification
-        label = classify_text(text, labels, model_name)
-        st.write(f"The text is classified as '{label}'.")
+    st.title("Text Classification App")
+
+    # Demander à l'utilisateur d'entrer les deux labels
+    label_1 = st.text_input("Enter label 1:")
+    label_2 = st.text_input("Enter label 2:")
+
+    # Demander à l'utilisateur d'entrer le texte à classer
+    text = st.text_area("Enter text:")
+
+    # Charger le modèle BERT pré-entraîné pour la classification de séquences
+    model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
+    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
+    # Transformer le texte en entrée en un encodage numérique qui peut être compris par le modèle BERT
+    inputs = tokenizer(text, padding=True, truncation=True, return_tensors="pt")
+
+    # Obtenir les scores de classification à partir du modèle BERT
+    outputs = model(**inputs)
+    scores = torch.softmax(outputs.logits, dim=1).tolist()[0]
+
+    # Déterminer le label avec le score le plus élevé et l'afficher à l'utilisateur
+    if scores[0] > scores[1]:
+        st.write(f"The text is classified as {label_1} with a confidence score of {scores[0]:.2f}.")
+    else:
+        st.write(f"The text is classified as {label_2} with a confidence score of {scores[1]:.2f}.")
 
 if __name__ == "__main__":
     main()
