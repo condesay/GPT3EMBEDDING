@@ -2,9 +2,9 @@ import streamlit as st
 from transformers import pipeline
 
 # Créer une fonction pour la classification de texte en utilisant le modèle RoBERTa
-def classify_text(model, text):
-    classifier = pipeline('sentiment-analysis', model=model)
-    result = classifier(text)[0]
+def classify_text(model, text, labels):
+    classifier = pipeline('text-classification', model=model)
+    result = classifier(text, labels=labels)[0]
     label = result['label']
     score = result['score']
     return label, score
@@ -13,9 +13,12 @@ def classify_text(model, text):
 def main():
     st.title("Text Classification")
     text = st.text_area("Enter text to classify")
-    model_name = "textattack/roberta-base-SST-2"
+    label1 = st.selectbox("Select label 1", ["Positive", "Negative"])
+    label2 = st.selectbox("Select label 2", ["Positive", "Negative"])
     if st.button("Classify"):
-        label, score = classify_text(model_name, text)
+        model_name = "textattack/roberta-base-SST-2"
+        labels = [label1, label2]
+        label, score = classify_text(model_name, text, labels)
         st.write(f"The text is classified as {label} with a confidence score of {score}.")
 
 if __name__ == "__main__":
