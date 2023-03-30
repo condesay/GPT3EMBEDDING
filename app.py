@@ -17,8 +17,17 @@ def get_similarity(text1, text2, model_engine):
         stop=None,
         temperature=0.5,
     )
-    similarity = response.choices[0].text.strip()
-    return similarity
+    similarity_str = response.choices[0].text.strip()
+    similarity_score = None
+    for token in similarity_str.split():
+        try:
+            similarity_score = float(token)
+            break
+        except ValueError:
+            pass
+    if similarity_score is None:
+        similarity_score = "No similarity score found."
+    return similarity_score
 
 # Fonction principale pour gérer l'exécution du programme
 def main():
@@ -31,8 +40,7 @@ def main():
         text2 = st.text_area("Text 2")
         if st.button("Compare"):
             similarity = get_similarity(text1, text2, model_engine)
-            similarity_score = float(similarity)
-            st.write(f"The similarity score between the two texts is {similarity_score:.2f}.")
+            st.write(f"The similarity score between the two texts is {similarity}.")
 
 if __name__ == "__main__":
     main()
