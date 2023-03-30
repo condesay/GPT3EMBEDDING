@@ -2,3 +2,4 @@ streamlit
 openai
 pandas
 numpy
+openai.embeddings_utils
