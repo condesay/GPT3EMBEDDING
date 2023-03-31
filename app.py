@@ -1,6 +1,7 @@
 import streamlit as st
 import re
 import openai
+from openai.embeddings_utils import get_embedding, cosine_similarity
 
 # Fonction pour extraire le score de similarité de la réponse générée par GPT-3
 def extract_score(response):
