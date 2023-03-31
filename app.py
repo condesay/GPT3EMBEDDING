@@ -40,7 +40,7 @@ def get_similarity(text1, text2, model_engine, api_key):
     openai.api_base = "https://tsi-openai.openai.azure.com"
     openai.api_version = "2022-12-01"
     # create a completion
-    completion = openai.Completion.create(deployment_id="text-similarity-davanci-001", prompt=text1)
+    completion = openai.Completion.create(deployment_id="de-code-davinci-002", prompt=text1)
 
     #print the completion
     similarity=completion.choices[0].text
