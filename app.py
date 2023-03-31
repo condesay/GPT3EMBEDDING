@@ -40,11 +40,16 @@ def get_similarity(text1, text2, model_engine, api_key):
     openai.api_base = "https://tsi-openai.openai.azure.com"
     openai.api_version = "2022-12-01"
     # create a completion
-    completion = openai.Completion.create(deployment_id="de-code-davinci-002", prompt=text1)
-
-    #print the completion
-    similarity=completion.choices[0].text
-    return similarity
+    completion = openai.Completion.create(
+        deployment_id= model_engine, 
+        prompt=f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:"
+        max_tokens=1000,
+        temperature=0.5
+    )
+    similarity = response.choices[0].text.strip()
+    similarity_score = extract_score(similarity)
+    return similarity_score
+    
 # Fonction principale pour gérer l'exécution du programme
 def main():
     st.title("Similarité entre textes")
