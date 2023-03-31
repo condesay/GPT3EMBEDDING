@@ -25,8 +25,7 @@ def get_similarity(text1, text2, model_engine, api_key):
         n=1,
         stop=None,
         temperature=0.5,
-        api_version="2021-10-01-preview",
-        endpoint="https://tsi-openai.openai.azure.com/"
+        endpoint="https://api.openai.com"
     )
     similarity = response.choices[0].text.strip()
     similarity_score = extract_score(similarity)
@@ -34,8 +33,6 @@ def get_similarity(text1, text2, model_engine, api_key):
 
 # Fonction principale pour gérer l'exécution du programme
 def main():
-    openai.api_base = "https://api.openai.com"
-    openai.api_version = "v1"
     st.title("Similarité entre textes")
     api_key = get_api_key()
     if api_key:
@@ -48,4 +45,3 @@ def main():
 
 if __name__ == "__main__":
     main()
- 
