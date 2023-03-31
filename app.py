@@ -43,7 +43,7 @@ def get_similarity(text1, text2, model_engine, api_key):
     completion = openai.Completion.create(
         deployment_id= model_engine, 
         prompt=f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:"
-        max_tokens=1000,
+        max_tokens=64,
         temperature=0.5
     )
     similarity = response.choices[0].text.strip()
