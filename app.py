@@ -25,7 +25,7 @@ def get_similarity(text1, text2, model_engine, api_key):
         n=1,
         stop=None,
         temperature=0.5,
-        openai.api_type = "azure",
+        openai.api_type == "azure",
         openai.api_version = "2022-12-01"
         endpoint="https://tsi-openai.openai.azure.com/"
     )
