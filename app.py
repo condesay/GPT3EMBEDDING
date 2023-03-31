@@ -39,7 +39,7 @@ def main():
     st.title("Similarité entre textes")
     api_key = get_api_key()
     if api_key:
-        model_engine = "text-similarity-davinci-002"
+        model_engine = "text-similarity-davinci-001"
         text1 = st.text_area("Texte 1")
         text2 = st.text_area("Texte 2")
         if st.button("Compare"):
