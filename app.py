@@ -28,7 +28,7 @@ def get_similarity(text1, text2, model_engine, api_key):
         temperature=0.5,
         api_version="2022-12-01",
         api_type="azure",
-        endpoint="https://tsi-openai.openai.azure.com/"
+        endpoint="https://tsi-openai.openai.azure.com/openai/deployments/text-similarity-davanci-001/embeddings?api-version=2022-12-01"
     )
     similarity = response.choices[0].text.strip()
     similarity_score = extract_score(similarity)
