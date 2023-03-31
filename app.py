@@ -25,7 +25,7 @@ def get_similarity(text1, text2, model_engine, api_key):
         n=1,
         stop=None,
         temperature=0.5,
-        endpoint="https://api.openai.com"
+        endpoint="https://tsi-openai.openai.azure.com/"
     )
     similarity = response.choices[0].text.strip()
     similarity_score = extract_score(similarity)
