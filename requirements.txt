@@ -2,3 +2,9 @@ streamlit
 openai
 torch
 transformers
+num2words 
+matplotlib
+plotly 
+scipy 
+scikit-learn 
+pandas 
