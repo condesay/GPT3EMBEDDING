@@ -17,23 +17,7 @@ def get_api_key():
     return api_key
 
 # Fonction pour récupérer la similarité entre deux textes en utilisant l'API OpenAI GPT-3
-"""def get_similarity(text1, text2, model_engine, api_key):
-    openai.api_key = api_key
-    response = openai.Completion.create(
-        engine=model_engine,
-        prompt=f"Compare the similarity between these two texts:\n\nText 1: {text1}\n\nText 2: {text2}\n\nSimilarity:",
-        max_tokens=64,
-        n=1,
-        stop=None,
-        temperature=0.5,
-        api_version="2022-12-01",
-        api_type="azure",
-        endpoint="https://tsi-openai.openai.azure.com/openai/deployments/text-similarity-davanci-001/embeddings?api-version=2022-12-01"
-    )
-    similarity = response.choices[0].text.strip()
-    similarity_score = extract_score(similarity)
-    return similarity_score
-"""
+
 def get_similarity(text1, text2, model_engine, api_key):
     openai.api_type = "azure"
     openai.api_key = api_key
